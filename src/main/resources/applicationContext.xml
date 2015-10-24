@@ -13,7 +13,26 @@
        <!-- 加载redis配置文件，可以后面用，为了简单我用得默认配置 -->  
        <context:property-placeholder location="classpath:database.properties"/>  
   
-       <bean id="jedisFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"/>  
+	   <bean id="jedisPoolConfig"  class="redis.clients.jedis.JedisPoolConfig" >  
+<!-- 	        <property  name="maxActive" value="${redis.maxActive}" />   -->
+	        <property  name="maxIdle"   value="${redis.maxIdle}" />  
+<!-- 	        <property   name="maxWait"  value="${redis.maxWaitMillis}" />   -->
+	        <property  name="testOnBorrow" value="${redis.testOnBorrow}" />  
+	   </bean>  
+       <bean id="jedisFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+           <property  name="hostName"  value="${redis.ip}" />  
+           <property  name="port"  value="${redis.port}" />  
+    	   <property  name="poolConfig" ref="jedisPoolConfig" />  
+       </bean>   
+  
+<!--   <bean id="jredisConnectionFactory" class="org.springframework.data.redis.connection.jredis.JredisConnectionFactory"> -->
+<!--     <constructor-arg> -->
+<!--       <bean class="org.springframework.data.redis.connection.jredis.DefaultJredisPool"> -->
+<!--         <constructor-arg value="localhost" /> -->
+<!--         <constructor-arg value="6379" /> -->
+<!--       </bean> -->
+<!--     </constructor-arg> -->
+<!--   </bean> -->
   
        <!-- 操作模板 -->  
        <bean id="jedisTemplate" class="org.springframework.data.redis.core.RedisTemplate">  
